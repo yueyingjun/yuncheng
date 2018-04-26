@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+
+        function table(row,col) {
+            var str="<table>";
+            for(var i=0;i<row;i++){
+                str+="<tr>";
+                for(var j=0;j<col;j++){
+                    str+="<td>";
+                    str+=j
+                    str+="</td>";
+                }
+                str+="</tr>";
+            }
+            str+="</table>";
+
+            return str;
+        }
+        document.write(table(10,10))
+        document.write(table(5,5))
+        document.write(table(20,20))
+    </script>
+</head>
+<body>
+
+</body>
+</html>
