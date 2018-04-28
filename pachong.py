@@ -2,28 +2,74 @@ from urllib import request
 from urllib.parse import *
 from bs4 import BeautifulSoup as bf
 
+import  sys
 
 
-
-def finds(city,job,page):
-    city = quote("北京")
-    url = "http://sou.zhaopin.com/jobs/searchresult.ashx?jl=%s&kw=%s&p=%s" % (city, job, page)
+def getPages(city,job,page):
+    city=quote(city)
+    job=quote(job)
+    url = "http://sou.zhaopin.com/jobs/searchresult.ashx?jl=%s&kw=%s&p=%s"%(city,job,page)
     req=request.Request(url)
-    res=request.urlopen(req)
+    res=request.urlopen(req);
     content=res.read()
-    html=content.decode("utf8")
-
+    html=content.decode("utf8");
     bfobj=bf(html,"lxml")
-    arr=bfobj.select(".zwmc div a")
-    jobs=[]
+    arr=bfobj.select(".pagesDown li a")
+    links=[]
     for item in arr:
-        print(item.text);
-        jobs.append(item.text)
+        links.append(item.get("href"))
 
-    f=open(job+str(page)+".py","w")
-    f.write(str(jobs));
-    f.close();
-finds("太原","java",1)
-finds("太原","java",2)
-finds("太原","java",3)
-finds("太原","java",4)
+    return links[2:-1];
+
+def  getInfo(pages):
+    for item in pages:
+        req=request.Request(item)
+        res=request.urlopen(req)
+        content=res.read();
+        html=content.decode("utf8");
+        bfobj = bf(html, "lxml")
+        #找职位的信息
+        jobs=bfobj.select(".zwmc div")
+        jobsarr=[]
+        for job in jobs:
+            jobsarr.append(job.find("a"));
+        # 公司名字的信息
+        names=bfobj.select(".gsmc");
+
+        namesarr=[]
+        for name in names:
+            namesarr.append(name.find("a"))
+        #薪资的信息
+        money=bfobj.select(".zwyx");
+        #工作地点
+        address=bfobj.select(".gzdd");
+
+        getResult(jobsarr[1:],namesarr[1:],money[1:],address[1:])
+
+
+def getResult(jobs,names,moneys,address):
+    jobsinfo=[]
+    for job in jobs:
+        jobsinfo.append(job.text)
+    namesinfo = []
+    for name in names:
+        namesinfo.append(name.text)
+    moneyinfo = []
+    for money in moneys:
+        moneyinfo.append(money.text)
+    addressinfo = []
+    for adds in address:
+        addressinfo.append(adds.text)
+    print(jobsinfo)
+    print(namesinfo)
+    print(moneyinfo)
+    print(addressinfo)
+
+
+
+
+pages=getPages("太原","java",1)
+
+getInfo(pages)
+
+
