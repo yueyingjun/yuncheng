@@ -4,6 +4,17 @@ from bs4 import BeautifulSoup as bf
 
 import  sys
 
+# 创建文件
+f=open("/Users/gaoxin/Documents/job/pages/index/data.js","w",encoding="utf8")
+f.write("var data=\nmodule.exports=data");
+f.close();
+
+# 读取文件
+f1=open("/Users/gaoxin/Documents/job/pages/index/data.js","r",encoding="utf8");
+con=f1.read()
+index=(con.find("\n"))
+start=con[0:index]
+end=con[index:]
 
 def getPages(city,job,page):
     city=quote(city)
@@ -46,7 +57,7 @@ def  getInfo(pages):
 
         getResult(jobsarr[1:],namesarr[1:],money[1:],address[1:])
 
-
+total=[]
 def getResult(jobs,names,moneys,address):
     jobsinfo=[]
     for job in jobs:
@@ -60,10 +71,20 @@ def getResult(jobs,names,moneys,address):
     addressinfo = []
     for adds in address:
         addressinfo.append(adds.text)
-    print(jobsinfo)
-    print(namesinfo)
-    print(moneyinfo)
-    print(addressinfo)
+
+    for (key,job) in enumerate(jobsinfo):
+        json={
+            "title":namesinfo[key],
+            "job":jobsinfo[key],
+            "money":moneyinfo[key],
+            "address":addressinfo[key],
+        }
+        total.append(json)
+    f2=open("/Users/gaoxin/Documents/job/pages/index/data.js","w",encoding="utf8")
+    f2.write(start+str(total)+end);
+    f2.close()
+
+
 
 
 
